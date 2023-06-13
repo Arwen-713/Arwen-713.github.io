@@ -30,6 +30,7 @@
    > &nbsp;&nbsp;&nbsp;&thinsp;└── _templates  
 1. 第一次将文档呈现为HTML:`sphinx-build -b html docs/source/ docs/build/html`  
 1. 在浏览器中打开 docs/build/html/index.html 即可看到
+2. 或安装`pip install sphinx-autobuild`,借助sphinx-autobuild工具启动HTTP服务: `sphinx-autobuild source build/html`,通过 http://127.0.0.1:8000 查看
 
 ## 修改模板
 - 主题
@@ -59,62 +60,9 @@ def setup(app):
 - 新增markdown页面
 1. 在source/下创建hpc.md文件
 2. 新页面加入source/index.rst的toctree的`:caption: Contents:`下隔一行后空三个空格(必须):`hpc #不含扩展名`
-- 多语言支持
+- 多语言支持 https://blog.hszofficial.site/recommend/2020/11/27/%E4%BD%BF%E7%94%A8Sphinx%E5%86%99%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3/#%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81
 1. 安装插件`pip install sphinx-intl`
 2. 设置:打开 docs/source/conf.py 添加以下内容:`locale_dirs = ['locale/']  # gettext_compact = False # optional.`
 3. 将文档内容转化为pot文件,放入docs/source/gettext文件夹下(与conf.py同级):`sphinx-build -b gettext source source/gettext`  
 4. 使用sphinx-intl工具将pot文件都转化成po文件用于翻译:`sphinx-intl update -p docs/source/gettext -d docs/locale -l en -l ja`,这一步的-d docs/locale和上面配置的locale_dirs对应,一种语言会对应一个文件夹,其中的文件和源文件是一一对应的关系.[.po并没有翻译,待解决]
 5. 编译还是使用sphinx-build,只是需要加上-D language='<语言>'并且注意目标文件夹,建议将目标文件夹放在主文件夹下的子文件夹下`sphinx-build -D language='en' -b html source transtext/en`
-- 单一静态站的多语言支持[sphinx_rtd_theme提供]
-1. 创建docs/source/_template/versions.html,写入:
-```
-\{\% if READTHEDOCS or display_lower_left \%\}
-\{\# Add rst-badge after rst-versions for small badge style. \#}
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
-    <span class="fa fa-book"> Read the Docs</span>
-    v: \{\{ current_version \}\}
-    <span class="fa fa-caret-down"></span>
-  </span>
-  <div class="rst-other-versions">
-    \{\% if languages|length >= 1 \%\}
-    <dl>
-      <dt>\{\{ _('Languages') \}\}</dt>
-      \{\% for slug, url in languages \%\}
-      \{\% if slug == current_language \%\} <strong> \{\% endif \%\}
-        <dd><a href="\{\{ url \}\}">\{\{ slug \}\}</a></dd>
-        \{\% if slug == current_language \%\} </strong> \{\% endif \%\}
-      \{\% endfor \%\}
-    </dl>
-    \{\% endif \%\}
-  </div>
-</div>
-{\{\% endif \%\}
-```
-2. 在..\Python\Python39\site-packages\sphinx\config.py中配置相关变量:
-```
-#多语言支持 
-try:
-    html_context
-except:
-    html_context = dict()
-html_context["current_version"] = version
-html_context['display_lower_left'] = True
-
-#从环境变量`CURRENT_LANGUAGE`获取当前语言,默认为zh_CN current_language = os.environ.get('CURRENT_LANGUAGE') if os.environ.get('CURRENT_LANGUAGE') else 'zh_CN'
-html_context['current_language'] = current_language
-
-if current_language == 'zh_CN':
-    # # POPULATE LINKS TO OTHER LANGUAGES     html_context['languages'] = [('zh_CN', 'index.html')]
-
-    languages = [lang.name for lang in Path(__file__).parent.joinpath("locale").iterdir() if lang.is_dir()]
-    for lang in languages:
-        html_context['languages'].append((lang, f'{lang}/index.html'))
-else:
-    # # POPULATE LINKS TO OTHER LANGUAGES     html_context['languages'] = [('zh_CN', '../index.html')]
-
-    languages = [lang.name for lang in Path(__file__).parent.joinpath("locale").iterdir() if lang.is_dir()]
-    for lang in languages:
-        html_context['languages'].append((lang, f'../{lang}/index.html'))
-```
-3. 在外部借助环境变量CURRENT_LANGUAGE在外部告知编译时的程序.因此编译程序为:`$env:CURRENT_LANGUAGE="en"; sphinx-build -D language='en' -b html document transtext/en`
