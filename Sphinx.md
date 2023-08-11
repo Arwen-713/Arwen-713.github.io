@@ -57,7 +57,8 @@ def setup(app):
     'auto_toc_maxdepth': 2, # 设置toc_tree深度           
     "enable_math": True, # 支持```math,注意目前inline_math会有问题因此不建议使用.           
     'enable_eval_rst': True, # 支持嵌入rst       
-    }, True)```
+    }, True)
+```
 3. 安装markdown表格`pip install sphinx_markdown_tables`  
 
 - 新增markdown页面
