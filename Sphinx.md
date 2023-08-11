@@ -36,6 +36,7 @@
 - 主题
 1. 安装新主题:`pip install sphinx-rtd-theme` 
 2. 修改主题:打开 docs/source/conf.py 修改 html_theme = 'sphinx_rtd_theme'
+
 - markdown插件
 1. 安装依赖`pip install --upgrade recommonmark`
 2. 设置:打开 docs/source/conf.py 添加以下内容:
@@ -56,10 +57,13 @@ def setup(app):
     'auto_toc_maxdepth': 2, # 设置toc_tree深度           
     "enable_math": True, # 支持```math,注意目前inline_math会有问题因此不建议使用.           
     'enable_eval_rst': True, # 支持嵌入rst       
-    }, True)```  
+    }, True)```
+3. 安装markdown表格`pip install sphinx_markdown_tables`  
+
 - 新增markdown页面
 1. 在source/下创建hpc.md文件
 2. 新页面加入source/index.rst的toctree的`:caption: Contents:`下隔一行后空三个空格(必须):`hpc #不含扩展名`
+
 - 多语言支持 https://blog.hszofficial.site/recommend/2020/11/27/%E4%BD%BF%E7%94%A8Sphinx%E5%86%99%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3/#%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81
 1. 安装插件`pip install sphinx-intl`
 2. 设置:打开 docs/source/conf.py 添加以下内容:`locale_dirs = ['locale/']  # gettext_compact = False # optional.`
