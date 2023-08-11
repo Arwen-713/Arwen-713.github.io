@@ -12,25 +12,25 @@
 1. 打开cmd命令提示符,cd到目标路径,在已安装python的前提下安装sphinx:`pip install -U sphinx`  
    **建议创建Python虚拟环境后安装:`python -m venv .venv` `source .venv/bin/activate` `python -m pip install sphinx`**
 1. 安装完成后，输入`sphinx-build --version`查看已安装版本(确认安装成功)  
-1. 通过`sphinx-quickstart docs`工具提示,在docs文件夹中为项目创建基本目录和配置布局:
+1. 通过`sphinx-quickstart SphinxDocs`工具提示,在SphinxDocs文件夹中为项目创建基本目录和配置布局:
    > Separate source and build directories (y/n) [n]: Write “y” (without quotes) and press Enter.  
-   > Project name: Write “Lumache” (without quotes) and press Enter.  
-   > Author name(s): Write “Graziella” (without quotes) and press Enter.  
+   > Project name: Write “SphinxDocs” (without quotes) and press Enter.  
+   > Author name(s): Write “Arwen” (without quotes) and press Enter.  
    > Project release []: Write “0.1” (without quotes) and press Enter.  
    > Project language [en]: Leave it empty (the default, English) and press Enter.  
    现在文件夹内容如下:  
-   > docs  
+   > SphinxDocs  
    > ├── build &emsp;&emsp;:一个空目录(目前)，用于保存呈现的文档  
    > ├── make.bat &thinsp;:方便的脚本可以简化一些常见的Sphinx操作  
    > ├── Makefile &ensp;:方便的脚本可以简化一些常见的Sphinx操作  
    > └── source   
    > &emsp;├── conf.py &emsp;:保存Sphinx项目配置的Python脚本.包含指定给sphinx-quickstart的项目名称和版本，以及一些额外的配置键  
    > &ensp;&ensp;├── index.rst &ensp;:项目的根文档，作为欢迎页面，包含“目录树”(或toctree)的根  
-   > &emsp;├── _static  
+   > &emsp;├── _static  &emsp;&ensp;:保存文档中图片的文件夹  
    > &nbsp;&nbsp;&nbsp;&thinsp;└── _templates  
-1. 第一次将文档呈现为HTML:`sphinx-build -b html docs/source/ docs/build/html`  
-1. 在浏览器中打开 docs/build/html/index.html 即可看到
-2. 或安装`pip install sphinx-autobuild`,借助sphinx-autobuild工具启动HTTP服务: `sphinx-autobuild source build/html`,通过 http://127.0.0.1:8000 查看
+1. 第一次将文档呈现为HTML:`sphinx-build -b html SphinxDocs/source/ SphinxDocs/build/html`  
+1. 在浏览器中打开 SphinxDocs/build/html/index.html 即可看到
+2. 或安装`pip install sphinx-autobuild`,借助sphinx-autobuild工具启动HTTP服务: `sphinx-autobuild SphinxDocs/source SphinxDocs/build/html`,通过 http://127.0.0.1:8000 查看
 
 ## 修改模板
 - 主题
@@ -38,15 +38,18 @@
 2. 修改主题:打开 docs/source/conf.py 修改 html_theme = 'sphinx_rtd_theme'
 
 - markdown插件
-1. 安装依赖`pip install --upgrade recommonmark`
+1. 安装依赖`pip install --upgrade recommonmark` 或 `pip install --upgrade myst-parser`在conf.py中添加`extensions = ['myst_parser']`  
 2. 设置:打开 docs/source/conf.py 添加以下内容:
 ```
 from recommonmark.transform import AutoStructify
 from recommonmark.parser import CommonMarkParser
 # 使用插件支持markdowm   # 使用插件支持markdowm   
 extensions.append('recommonmark')
-# 针对`.md`为后缀的文件做markdown渲染   
-source_suffix[".md"] = 'markdown'
+# 针对`.md`为后缀的文件做markdown渲染
+source_suffix = {
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
 # 设置markdown渲染器的自定义项 
 def setup(app):  
     github_doc_root = 'https://localhost:5000'  
